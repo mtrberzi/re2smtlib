@@ -11,5 +11,26 @@ class TestBasic(unittest.TestCase):
     def test_flattened_literal(self):
         self.assertEqual(translate_regex_to_smtlib("ABC"), '(str.to_re "ABC")')
 
+    def test_star_literal(self):
+        self.assertEqual(translate_regex_to_smtlib("a*"), '(re.* (str.to_re "a"))')
+
+    def test_plus_literal(self):
+        self.assertEqual(translate_regex_to_smtlib("a+"), '(re.+ (str.to_re "a"))')
+
+    def test_parens(self):
+        self.assertEqual(translate_regex_to_smtlib("(a)"), '(str.to_re "a")')
+
+    def test_union(self):
+        self.assertEqual(translate_regex_to_smtlib("a|b"), '(re.union (str.to_re "a") (str.to_re "b"))')
+
+    def test_union_of_long_literals(self):
+        self.assertEqual(translate_regex_to_smtlib("(abc)|d"), '(re.union (str.to_re "abc") (str.to_re "d"))')
+
+    def test_negated_character_class(self):
+        self.assertEqual(translate_regex_to_smtlib("[^a]"), '(re.comp (str.to_re "a"))')
+
+    def test_optional(self):
+        self.assertEqual(translate_regex_to_smtlib("a?"), '(re.opt (str.to_re "a"))')
+
 if __name__ == '__main__':
     unittest.main()

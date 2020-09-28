@@ -36,4 +36,15 @@ class SmtSimplifier:
                 return flattened_args[0]
             else:
                 return ReConcat(flattened_args)
-        raise ValueError(f"simplifier doesn't know about {ast}")
+        elif isinstance(ast, ReUnion):
+            return ReUnion(simplified_args)
+        elif isinstance(ast, ReStar):
+            return ReStar(simplified_args[0])
+        elif isinstance(ast, RePlus):
+            return RePlus(simplified_args[0])
+        elif isinstance(ast, ReComplement):
+            return ReComplement(simplified_args[0])
+        elif isinstance(ast, ReOpt):
+            return ReOpt(simplified_args[0])
+        else:
+            raise ValueError(f"simplifier doesn't know about {ast}")

@@ -28,3 +28,41 @@ class ReConcat:
         s += ")"
         return s
 
+class ReUnion:
+    def __init__(self, args):
+        self.args = args
+
+    def __str__(self):
+        s = "(re.union"
+        for x in self.args:
+            s += " " + str(x)
+        s += ")"
+        return s
+
+class ReStar:
+    def __init__(self, subexpr):
+        self.args = [subexpr]
+
+    def __str__(self):
+        return "(re.* " + str(self.args[0]) + ")"
+
+class RePlus:
+    def __init__(self, subexpr):
+        self.args = [subexpr]
+
+    def __str__(self):
+        return "(re.+ " + str(self.args[0]) + ")"
+
+class ReComplement:
+    def __init__(self, subexpr):
+        self.args = [subexpr]
+        
+    def __str__(self):
+        return "(re.comp " + str(self.args[0]) + ")"
+
+class ReOpt:
+    def __init__(self, subexpr):
+        self.args = [subexpr]
+
+    def __str__(self):
+        return "(re.opt " + str(self.args[0]) + ")"
