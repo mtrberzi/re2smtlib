@@ -1,3 +1,13 @@
+def escape_codepoint(codepoint):
+    if codepoint < 32 or codepoint >= 127:
+        # unicode escape
+        return '\\u{' + format(codepoint, 'x') + '}'
+    elif codepoint == 92:
+        # escape backslash
+        return '\\u{5c}'
+    else:
+        return chr(codepoint)
+
 class ReStr:
     def __init__(self, codepoints):
         self.codepoints = codepoints
@@ -6,14 +16,7 @@ class ReStr:
         # Encode this as an SMT-LIBv2.6 string constant.
         s = '(str.to_re "'
         for codepoint in self.codepoints:
-            if codepoint < 32 or codepoint >= 127:
-                # unicode escape
-                s += '\\u{' + format(codepoint, 'x') + '}'
-            elif codepoint == 92:
-                # escape backslash
-                s += '\\u{5c}'
-            else:
-                s += chr(codepoint)
+            s += escape_codepoint(codepoint)
         s += '")'
         return s
 
@@ -66,3 +69,35 @@ class ReOpt:
 
     def __str__(self):
         return "(re.opt " + str(self.args[0]) + ")"
+
+class ReRange:
+    def __init__(self, lo, hi):
+        self.args = []
+        self.lo = lo
+        self.hi = hi
+
+    def __str__(self):
+        return "(re.range \"" + escape_codepoint(self.lo) + "\" \"" + escape_codepoint(self.hi) + "\")"
+
+class ReLoop:
+    def __init__(self, lo, hi, subexpr):
+        self.args = [subexpr]
+        self.lo = lo
+        self.hi = hi
+
+    def __str__(self):
+        return "((_ re.loop " + str(self.lo) + " " + str(self.hi) + ") " + str(self.args[0]) + ")"
+
+class ReAnyChar:
+    def __init__(self):
+        self.args = []
+
+    def __str__(self):
+        return '(re.allchar)'
+    
+class ReNoOp:
+    def __init__(self):
+        self.args = []
+
+    def __str__(self):
+        return ''

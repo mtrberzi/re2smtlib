@@ -19,6 +19,8 @@ class SmtSimplifier:
                 term = worklist.pop(0)
                 if isinstance(term, ReStr):
                     flattened_codepoints.extend(term.codepoints)
+                elif isinstance(term, ReNoOp):
+                    continue
                 else:
                     if isinstance(term, ReConcat):
                         worklist.extend(term.args)
@@ -46,5 +48,13 @@ class SmtSimplifier:
             return ReComplement(simplified_args[0])
         elif isinstance(ast, ReOpt):
             return ReOpt(simplified_args[0])
+        elif isinstance(ast, ReRange):
+            return ast
+        elif isinstance(ast, ReLoop):
+            return ReLoop(ast.lo, ast.hi, simplified_args[0])
+        elif isinstance(ast, ReAnyChar):
+            return ast
+        elif isinstance(ast, ReNoOp):
+            return ast
         else:
             raise ValueError(f"simplifier doesn't know about {ast}")
