@@ -5,6 +5,9 @@ def escape_codepoint(codepoint):
     elif codepoint == 92:
         # escape backslash
         return '\\u{5c}'
+    elif codepoint == 34:
+        # escape double-quote
+        return '\\u{22}'
     else:
         return chr(codepoint)
 
