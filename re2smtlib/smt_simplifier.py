@@ -39,7 +39,10 @@ class SmtSimplifier:
             else:
                 return ReConcat(flattened_args)
         elif isinstance(ast, ReUnion):
-            return ReUnion(simplified_args)
+            if len(simplified_args) == 1:
+                return simplified_args[0]
+            else:
+                return ReUnion(simplified_args)
         elif isinstance(ast, ReStar):
             return ReStar(simplified_args[0])
         elif isinstance(ast, RePlus):
