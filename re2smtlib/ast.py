@@ -96,7 +96,7 @@ class ReAnyChar:
         self.args = []
 
     def __str__(self):
-        return '(re.allchar)'
+        return 're.allchar'
     
 class ReNoOp:
     def __init__(self):

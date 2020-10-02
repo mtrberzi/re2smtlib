@@ -26,6 +26,9 @@ class ReTranslator:
             elif min_count == 1 and max_count == MAXREPEAT:
                 # plus
                 return RePlus(self.visit(subexpr))
+            elif min_count > 1 and max_count == MAXREPEAT:
+                # "at least N times"
+                return ReConcat([ReLoop(min_count, min_count, self.visit(subexpr)), ReStar(self.visit(subexpr))])
             elif min_count == 0 and max_count == 1:
                 # opt
                 return ReOpt(self.visit(subexpr))

@@ -32,5 +32,11 @@ class TestBasic(unittest.TestCase):
     def test_optional(self):
         self.assertEqual(translate_regex_to_smtlib("a?"), '(re.opt (str.to_re "a"))')
 
+    def test_minimum_bounded_repeat(self):
+        self.assertEqual(translate_regex_to_smtlib("a{5,}"), '(re.++ ((_ re.loop 5 5) (str.to_re "a")) (re.* (str.to_re "a")))')
+
+    def test_single_argument_union(self):
+        self.assertEqual(translate_regex_to_smtlib("a|$"), '(str.to_re "a")')
+
 if __name__ == '__main__':
     unittest.main()

@@ -34,15 +34,31 @@ class SmtSimplifier:
             if flattened_codepoints:
                 flattened_args.append(ReStr(flattened_codepoints))
             # concatenation of 1 term is just that term, so discharge the concatenation
-            if len(flattened_args) == 1:
+            if len(flattened_args) == 0:
+                return ReNoOp()
+            elif len(flattened_args) == 1:
                 return flattened_args[0]
             else:
                 return ReConcat(flattened_args)
         elif isinstance(ast, ReUnion):
-            if len(simplified_args) == 1:
-                return simplified_args[0]
+            # TODO deduplicate args
+            flattened_args = []
+            worklist = []
+            worklist.extend(simplified_args)
+            while worklist:
+                term = worklist.pop(0)
+                if isinstance(term, ReUnion):
+                    worklist.extend(term.args)
+                elif isinstance(term, ReNoOp):
+                    continue
+                else:
+                    flattened_args.append(term)
+            if len(flattened_args) == 0:
+                return ReNoOp()
+            elif len(flattened_args) == 1:
+                return flattened_args[0]
             else:
-                return ReUnion(simplified_args)
+                return ReUnion(flattened_args)
         elif isinstance(ast, ReStar):
             return ReStar(simplified_args[0])
         elif isinstance(ast, RePlus):
